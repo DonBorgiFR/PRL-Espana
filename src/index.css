@@ -331,6 +331,19 @@ body {
   line-height: 1.7;
 }
 
+.hero-inline-note {
+  margin-top: var(--space-md);
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(147, 197, 253, 0.28);
+  background: rgba(15, 23, 42, 0.45);
+  color: #bfdbfe;
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+}
+
 .home-stats {
   display: flex;
   gap: var(--space-xl);
@@ -1381,6 +1394,29 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+}
+
+.ai-inline-note {
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  background: rgba(120, 53, 15, 0.18);
+  color: #fcd34d;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.ai-inline-note strong {
+  color: #fde68a;
+}
+
+.ai-inline-note code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 1px 6px;
+  color: #fef3c7;
 }
 
 .ai-controls {

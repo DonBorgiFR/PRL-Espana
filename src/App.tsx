@@ -111,6 +111,7 @@ const HomePage = () => (
     <header className="home-hero">
       <h2 id="hero-title">Transformando normativa en <span className="gradient-text">decisiones estratégicas</span></h2>
       <p id="hero-desc">Plataforma de consulta PRL con enfoque de ingeniería y control de gestión: del cumplimiento legal a la ejecución operativa medible.</p>
+      <div className="hero-inline-note">IA local opcional con Ollama para consultas técnicas sin salir de tu entorno.</div>
     </header>
     
     <div className="home-stats" id="stats-container">
@@ -500,6 +501,9 @@ const ConsultorIAPage = () => {
       </header>
 
       <div className="ai-panel">
+        <div className="ai-inline-note">
+          <strong>Modo local:</strong> Este módulo consulta Ollama en tu máquina. Si no responde, inicia <code>ollama serve</code> y verifica el modelo.
+        </div>
         <div className="ai-controls">
           <label>
             Modelo Ollama
