@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Route, Switch, useLocation, Link } from 'wouter';
+import brandLogo from '../logo.jpeg';
 import {
   leyes,
   referencias,
@@ -12,16 +13,23 @@ import {
 // COMPONENTS
 // ============================================================
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [location] = useLocation();
+
+  const closeOnMobile = () => {
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      onClose();
+    }
+  };
   
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-logo" id="sidebar-header">
         <Link href="/">
-          <div style={{ cursor: 'pointer' }} id="logo-branding">
-            <h1>PRL ESPAÑA</h1>
-            <span>Base de Conocimiento Normativo</span>
+          <div style={{ cursor: 'pointer' }} id="logo-branding" onClick={closeOnMobile}>
+            <img src={brandLogo} alt="Borja Felix Rojas" className="brand-logo" />
+            <h1>PRL España</h1>
+            <span>Control de Gestión · Ingeniería de Datos · PRL</span>
           </div>
         </Link>
       </div>
@@ -29,12 +37,12 @@ const Sidebar = () => {
       <nav className="sidebar-nav">
         <div className="nav-section-label">Principal</div>
         <Link href="/">
-          <a className={`nav-item ${location === '/' ? 'active' : ''}`} id="link-nav-home">
+          <a className={`nav-item ${location === '/' ? 'active' : ''}`} id="link-nav-home" onClick={closeOnMobile}>
             <span className="nav-icon">🏠</span> Inicio
           </a>
         </Link>
         <Link href="/buscador">
-          <a className={`nav-item ${location === '/buscador' ? 'active' : ''}`} id="link-nav-search">
+          <a className={`nav-item ${location === '/buscador' ? 'active' : ''}`} id="link-nav-search" onClick={closeOnMobile}>
             <span className="nav-icon">🔍</span> Buscador Inteligente
           </a>
         </Link>
@@ -45,6 +53,7 @@ const Sidebar = () => {
             <a 
               className={`nav-item ${location === `/normativa/${ley.id}` ? 'active' : ''}`} 
               id={`link-nav-ley-${ley.id}`}
+              onClick={closeOnMobile}
             >
               <div className="nav-dot" style={{ backgroundColor: ley.color }}></div>
               {ley.id.toUpperCase()}
@@ -54,17 +63,17 @@ const Sidebar = () => {
         
         <div className="nav-section-label">Recursos</div>
         <Link href="/referencias">
-          <a className={`nav-item ${location === '/referencias' ? 'active' : ''}`} id="link-nav-refs">
+          <a className={`nav-item ${location === '/referencias' ? 'active' : ''}`} id="link-nav-refs" onClick={closeOnMobile}>
             <span className="nav-icon">🔗</span> Referencias Cruzadas
           </a>
         </Link>
         <Link href="/fichas">
-          <a className={`nav-item ${location === '/fichas' ? 'active' : ''}`} id="link-nav-fichas">
+          <a className={`nav-item ${location === '/fichas' ? 'active' : ''}`} id="link-nav-fichas" onClick={closeOnMobile}>
             <span className="nav-icon">🎓</span> Fichas de Capacitación
           </a>
         </Link>
         <Link href="/auditoria">
-          <a className={`nav-item ${location === '/auditoria' ? 'active' : ''}`} id="link-nav-auditoria">
+          <a className={`nav-item ${location === '/auditoria' ? 'active' : ''}`} id="link-nav-auditoria" onClick={closeOnMobile}>
             <span className="nav-icon">✅</span> Auditoría Interactiva
           </a>
         </Link>
@@ -89,8 +98,8 @@ const Badge = ({ type }: { type: 'tecnico' | 'divulgativo' | 'ambos' }) => {
 const HomePage = () => (
   <div className="fade-in">
     <header className="home-hero">
-      <h2 id="hero-title">Gestión Inteligente de la <span className="gradient-text">Prevención de Riesgos</span> en España</h2>
-      <p id="hero-desc">Acceso centralizado a la normativa fundamental de Seguridad y Salud en el Trabajo, con fichas de capacitación interactivas y conexiones entre normas.</p>
+      <h2 id="hero-title">Transformando normativa en <span className="gradient-text">decisiones estratégicas</span></h2>
+      <p id="hero-desc">Plataforma de consulta PRL con enfoque de ingeniería y control de gestión: del cumplimiento legal a la ejecución operativa medible.</p>
     </header>
     
     <div className="home-stats" id="stats-container">
@@ -648,10 +657,27 @@ const AuditoriaPage = () => {
 // ============================================================
 
 const App = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="app-layout">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <button
+        className={`sidebar-backdrop ${isSidebarOpen ? 'show' : ''}`}
+        onClick={() => setIsSidebarOpen(false)}
+        aria-label="Cerrar menú"
+      />
       <main className="main-content">
+        <div className="mobile-topbar">
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsSidebarOpen(true)}
+            aria-label="Abrir menú"
+          >
+            ☰
+          </button>
+          <div className="mobile-topbar-title">PRL España</div>
+        </div>
         <Switch>
           <Route path="/" component={HomePage} />
           <Route path="/normativa/:id" component={NormativaPage} />
