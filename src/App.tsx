@@ -128,6 +128,46 @@ const HomePage = () => (
         <span className="label">Conexiones</span>
       </div>
     </div>
+
+    <section className="about-borja" id="sobre-borja">
+      <div className="about-borja-header">
+        <img src={brandLogo} alt="Borja Felix Rojas" className="about-borja-avatar" />
+        <div>
+          <h3>Sobre Borja</h3>
+          <p>Ingeniero Civil Industrial y Controller de Gestión, con experiencia en PRL, operaciones y diseño de indicadores para toma de decisiones.</p>
+        </div>
+      </div>
+
+      <div className="about-borja-grid">
+        <article className="about-borja-card">
+          <span>01</span>
+          <h4>Reporting Ejecutivo</h4>
+          <p>KPI accionables para priorizar riesgos, cumplimiento y rendimiento operativo.</p>
+        </article>
+        <article className="about-borja-card">
+          <span>02</span>
+          <h4>Automatización</h4>
+          <p>Integración de datos y procesos para reducir errores y tiempos de ciclo.</p>
+        </article>
+        <article className="about-borja-card">
+          <span>03</span>
+          <h4>Data Analytics</h4>
+          <p>Conexión entre normativa, evidencia documental y decisiones de negocio.</p>
+        </article>
+        <article className="about-borja-card">
+          <span>04</span>
+          <h4>Mejora Continua</h4>
+          <p>Del control en terreno a la estrategia anual con seguimiento medible.</p>
+        </article>
+      </div>
+
+      <div className="about-borja-actions">
+        <a href="https://borjafelixrojas.odoo.com/about-us" target="_blank" rel="noreferrer" className="about-borja-link">Perfil profesional ↗</a>
+        <Link href="/consultor-ia">
+          <a className="about-borja-link about-borja-link-soft">Probar Consultor IA</a>
+        </Link>
+      </div>
+    </section>
     
     <div className="nav-section-label" style={{ paddingLeft: 0, marginBottom: '1rem' }}>Explorar Normativa</div>
     <div className="cards-grid" id="normativa-grid">

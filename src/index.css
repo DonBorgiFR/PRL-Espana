@@ -373,6 +373,102 @@ body {
   font-weight: 600;
 }
 
+.about-borja {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.08) 0%, rgba(15, 23, 42, 0.35) 100%);
+}
+
+.about-borja-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.about-borja-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid var(--border-hover);
+}
+
+.about-borja-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.about-borja-header p {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  max-width: 760px;
+}
+
+.about-borja-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.about-borja-card {
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.about-borja-card span {
+  display: inline-block;
+  font-size: 0.66rem;
+  color: #93c5fd;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.about-borja-card h4 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.about-borja-card p {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.about-borja-actions {
+  margin-top: var(--space-md);
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.about-borja-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.1);
+  color: #fde68a;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 7px 12px;
+}
+
+.about-borja-link-soft {
+  border-color: rgba(147, 197, 253, 0.32);
+  background: rgba(147, 197, 253, 0.1);
+  color: #bfdbfe;
+}
+
 /* ============================================================
    CARDS GRID & LAW CARDS
    ============================================================ */
@@ -1599,6 +1695,7 @@ body {
   .ai-composer { grid-template-columns: 1fr; }
   .ai-msg-user,
   .ai-msg-assistant { margin-left: 0; margin-right: 0; }
+  .about-borja-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 480px) {
@@ -1607,6 +1704,8 @@ body {
   .auditoria-sectores-grid { grid-template-columns: 1fr; }
   .tabs-row { width: 100%; }
   .tab-btn { flex: 1; text-align: center; }
+  .about-borja-header { align-items: flex-start; }
+  .about-borja-grid { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
