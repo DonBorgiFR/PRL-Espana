@@ -109,7 +109,35 @@ Notas técnicas:
 
 ## 🗺️ Roadmap de Explotación
 
-*   [ ] **Auditoría Interactiva:** Checklist sectorial basado en la normativa seleccionada.
+*   [x] **Auditoría Interactiva:** Checklist sectorial basado en la normativa seleccionada.
+*   [x] **Consultor IA Local (Ollama):** Asistente en `/consultor-ia` con contexto normativo interno.
 *   [ ] **Generación de Vídeo:** Conversión de fichas de capacitación en scripts para vídeo con IA.
 *   [ ] **Exportación PDF:** Generación de manuales formativos personalizados.
 *   [ ] **Ampliación Normativa:** Inclusión de RD 486/1997 (Lugares de Trabajo) y NTPs del INSST.
+
+---
+
+## 📌 Cierre de la Iteración (2026-03-23)
+
+Estado al cierre:
+
+*   UI renovada con branding profesional y navegación mobile corregida (sidebar no bloquea contenido).
+*   Integración Ollama implementada y documentada (chat local + contexto normativo interno).
+*   Sección de perfil profesional integrada en Home con presencia sutil.
+*   Repositorio sincronizado en GitHub con commits incrementales por funcionalidad.
+
+---
+
+## 🔜 Próxima Iteración (Checklist)
+
+1. Refinamiento visual final:
+    * reducir todavía más la huella de perfil si se requiere modo "firma silenciosa".
+    * ajustar microtipografía y espaciado para lectura de normativa extensa.
+2. Operativa del Consultor IA:
+    * selector rápido de prompts (auditoría, formación, resumen ejecutivo).
+    * botón "copiar respuesta" y exportación a texto/PDF.
+3. Producto PRL:
+    * módulo de exportación PDF de checklist y fichas.
+    * incorporación de nueva normativa (RD 486/1997) con referencias cruzadas.
+4. Despliegue:
+    * definir backend/reverse proxy para Ollama en entorno productivo (el proxy Vite es solo dev).

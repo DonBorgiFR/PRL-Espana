@@ -16,11 +16,19 @@ Es el corazón del proyecto. En lugar de una base de datos externa, la normativa
 Proporciona utilidades para acceder a la base de conocimiento:
 *   `searchAll(query, filters)`: Motor de búsqueda en memoria que recorre leyes, capítulos y fichas.
 *   `getArticuloById(leyId, artId)`: Lookup directo para visualización individual.
+*   `buildNormativeContext(query)`: Compresión de contexto normativo para consultas IA locales.
 
 ### 3. Capa de Presentación (`src/App.tsx`)
 Basada en componentes funcionales de React.
 *   **Routing:** `wouter` para un enrutado ligero y basado en el estado.
 *   **UI Declarativa:** Se renderiza el árbol normativo de forma recursiva (Leyes -> Capítulos -> Artículos).
+*   **Consultor IA Local:** Pantalla `/consultor-ia` con flujo de conversación y trazabilidad de contexto interno.
+
+### 4. Capa de Integración Local IA (Vite Proxy)
+*   Endpoint UI: `/api/ollama/chat`
+*   Proxy dev: `vite.config.ts` redirige a `http://127.0.0.1:11434/api`.
+*   Objetivo: mantener la app frontend desacoplada de credenciales y permitir uso local de Ollama.
+*   Nota: esta capa existe solo en desarrollo con Vite; en producción requiere backend/proxy dedicado.
 
 ---
 
