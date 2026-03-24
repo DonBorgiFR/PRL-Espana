@@ -1523,6 +1523,18 @@ body {
   color: var(--text-primary);
 }
 
+.audit-export-btn {
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
+.audit-export-btn:hover {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.6);
+  color: #fde68a;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.15);
+}
+
 .auditoria-progress-wrap { margin-bottom: var(--space-xl); }
 
 .auditoria-progress-labels {
@@ -2666,4 +2678,175 @@ body {
 @media (max-width: 600px) {
   .doc-fields-grid { grid-template-columns: 1fr; }
   .doc-preview-paper { padding: 24px 20px; }
+}
+
+/* ============================================================
+   CONSULTOR IA — Bloque 3 UX
+   ============================================================ */
+
+/* Presets por categoría */
+.ai-presets-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.ai-presets-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10, 14, 24, 0.5);
+}
+
+.ai-preset-tab {
+  flex: 1;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.ai-preset-tab:last-child { border-right: none; }
+
+.ai-preset-tab:hover { color: var(--text-secondary); background: rgba(255,255,255,0.03); }
+
+.ai-preset-tab.active {
+  color: var(--tab-color, #818cf8);
+  background: color-mix(in srgb, var(--tab-color, #818cf8) 8%, transparent);
+  border-bottom: 2px solid var(--tab-color, #818cf8);
+  margin-bottom: -1px;
+}
+
+.ai-preset-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px;
+  background: rgba(10, 14, 24, 0.3);
+}
+
+/* Chips de consulta */
+.ai-demo-chip {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition);
+  line-height: 1.4;
+}
+
+.ai-demo-chip:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.ai-demo-chip:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Header de mensaje (rol + botón copiar) */
+.ai-msg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+/* Botón copiar */
+.ai-copy-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.ai-copy-btn:hover {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.04);
+}
+
+.ai-copy-btn.copied {
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.08);
+}
+
+/* Chip de fuentes */
+.ai-sources-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px 10px;
+  font-weight: 500;
+}
+
+/* Typing indicator */
+.ai-typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.ai-typing span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: ai-bounce 1.2s ease-in-out infinite;
+}
+
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ai-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Composer actions (consultar + borrar) */
+.ai-composer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Botón limpiar historial */
+.ai-clear-btn {
+  font-size: 1rem;
+  padding: 6px 10px;
+  border-color: rgba(239, 68, 68, 0.2);
+  color: rgba(252, 165, 165, 0.6);
+}
+
+.ai-clear-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
 }

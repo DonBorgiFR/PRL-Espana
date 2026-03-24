@@ -124,4 +124,48 @@ export const referencias: ReferenciaCruzada[] = [
     descripcion: 'La vigilancia de la salud (art. 22 LPRL) debe incluir control auditivo cuando la evaluación del lugar de trabajo detecte niveles de ruido superiores a 80 dB(A) conforme al Anexo III.B del RD 486/1997.',
     tipo: 'complemento',
   },
+  // ── Nuevas referencias: RD 614, RD 1215, RD 773 ──
+  {
+    id: 'ref-18',
+    origen: { leyId: 'lprl', articuloId: 'lprl-art15', label: 'LPRL Art. 15' },
+    destino: { leyId: 'rd773', articuloId: 'rd773-art1', label: 'RD 773/1997 Art. 1' },
+    descripcion: 'El art. 15 LPRL sitúa el EPI como última medida de la jerarquía de controles preventivos. El RD 773/1997 regula exactamente cuándo, cómo y qué EPI usar, desarrollando ese principio jerárquico en obligaciones concretas.',
+    tipo: 'desarrollo',
+  },
+  {
+    id: 'ref-19',
+    origen: { leyId: 'lprl', articuloId: 'lprl-art17', label: 'LPRL Art. 17' },
+    destino: { leyId: 'rd1215', articuloId: 'rd1215-art3', label: 'RD 1215/1997 Art. 3' },
+    descripcion: 'El art. 17 LPRL obliga al empresario a proporcionar equipos de trabajo adecuados y seguros. El RD 1215/1997 desarrolla en detalle los requisitos mínimos de seguridad, el examen inicial y las comprobaciones periódicas que debe cumplir cada equipo.',
+    tipo: 'desarrollo',
+  },
+  {
+    id: 'ref-20',
+    origen: { leyId: 'lprl', articuloId: 'lprl-art14', label: 'LPRL Art. 14' },
+    destino: { leyId: 'rd614', articuloId: 'rd614-art3', label: 'RD 614/2001 Art. 3' },
+    descripcion: 'Las obligaciones generales de seguridad del empresario del art. 14 LPRL se concretan para el riesgo eléctrico en el art. 3 del RD 614/2001: formación acreditada, autorización expresa y procedimientos escritos para trabajos eléctricos.',
+    tipo: 'especificacion',
+  },
+  {
+    id: 'ref-21',
+    origen: { leyId: 'rd1215', articuloId: 'rd1215-anexo1-c', label: 'RD 1215/1997 Anexo I.C' },
+    destino: { leyId: 'rd614', articuloId: 'rd614-art7', label: 'RD 614/2001 Art. 7' },
+    descripcion: 'El procedimiento de consignación LOTO para mantenimiento de equipos (Anexo I.C RD 1215/1997) y la Regla de Oro eléctrica de 5 pasos (Art. 7 RD 614/2001) son procedimientos complementarios que aplican conjuntamente en el mantenimiento eléctrico de maquinaria.',
+    tipo: 'complemento',
+  },
+  {
+    id: 'ref-22',
+    origen: { leyId: 'rd773', articuloId: 'rd773-art4', label: 'RD 773/1997 Art. 4' },
+    destino: { leyId: 'rd614', articuloId: 'rd614-art6', label: 'RD 614/2001 Art. 6' },
+    descripcion: 'Los EPI eléctricos usados en trabajos en tensión (guantes aislantes, herramientas aisladas) son Categoría III según el RD 773/1997, lo que implica organismo notificado y revisiones periódicas de homologación conforme a lo exigido por el RD 614/2001.',
+    tipo: 'especificacion',
+  },
+  {
+    id: 'ref-23',
+    origen: { leyId: 'lprl', articuloId: 'lprl-art25', label: 'LPRL Art. 25' },
+    destino: { leyId: 'rd773', articuloId: 'rd773-art4', label: 'RD 773/1997 Art. 4' },
+    descripcion: 'La protección de trabajadores especialmente sensibles (art. 25 LPRL) requiere adaptar la selección del EPI a sus condiciones anatómicas, fisiológicas y de salud, como exige el criterio de idoneidad del art. 4 del RD 773/1997.',
+    tipo: 'complemento',
+  },
 ];
+

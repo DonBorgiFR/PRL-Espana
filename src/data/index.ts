@@ -3,13 +3,16 @@ import { rsp } from './rsp';
 import { cae } from './cae';
 import { construccion } from './construccion';
 import { rd486 } from './rd486';
+import { rd614 } from './rd614';
+import { rd1215 } from './rd1215';
+import { rd773 } from './rd773';
 import { referencias } from './referencias';
 import { fichas } from './fichas';
 import { rolesData } from './rolesData';
 import { documentosData } from './documentosData';
 import type { Ley } from './types';
 
-export const leyes: Ley[] = [lprl, rsp, cae, construccion, rd486];
+export const leyes: Ley[] = [lprl, rsp, cae, construccion, rd486, rd614, rd1215, rd773];
 
 export function getLeyById(id: string): Ley | undefined {
   return leyes.find((l) => l.id === id);
@@ -92,4 +95,4 @@ export function buildNormativeContext(query: string, maxArticles = 6, maxFichas 
   };
 }
 
-export { leyes as default, referencias, fichas, lprl, rsp, cae, construccion, rd486, rolesData, documentosData };
+export { leyes as default, referencias, fichas, lprl, rsp, cae, construccion, rd486, rd614, rd1215, rd773, rolesData, documentosData };

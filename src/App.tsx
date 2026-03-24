@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Route, Switch, useLocation, Link } from 'wouter';
 import brandLogo from '../logo.jpeg';
 import html2canvas from 'html2canvas';
@@ -758,23 +758,76 @@ function buildDemoResponse(query: string): string {
   return lineas.join('\n');
 }
 
-const DEMO_PROMPTS = [
-  '¿Qué obligaciones tiene el empresario en coordinación de actividades?',
-  '¿Cómo se documenta la evaluación inicial de riesgos?',
-  '¿Qué exige el RD 486 sobre condiciones del lugar de trabajo?',
-  '¿Cuándo es obligatoria la vigilancia de la salud?',
+const WELCOME_MSG: ChatMessage = {
+  role: 'assistant',
+  content: 'Hola. Soy el Consultor IA de PRL España.\n\nEn este momento funciono en **modo vista previa**: analizo tu consulta contra la base normativa interna (LPRL, RSP, CAE, RD 486, Construcción) y te devuelvo los artículos y fichas más relevantes.\n\nCon la integración IA activa, recibirías una respuesta redactada, argumentada y adaptada a tu caso. Escribe tu consulta para ver cómo funcionaría.',
+};
+
+const DEMO_PROMPTS_BY_CATEGORY = [
+  {
+    label: 'Obligaciones empresariales',
+    color: '#818cf8',
+    prompts: [
+      '¿Qué obligaciones tiene el empresario en coordinación de actividades?',
+      '¿Qué información debe entregar la empresa a los trabajadores?',
+      '¿Qué dice la LPRL sobre la evaluación de riesgos?',
+    ],
+  },
+  {
+    label: 'Documentación y procedimientos',
+    color: '#34d399',
+    prompts: [
+      '¿Cómo se documenta la evaluación inicial de riesgos?',
+      '¿Qué registros exige el RSP al servicio de prevención?',
+      '¿Qué debe contener el Plan de Emergencia?',
+    ],
+  },
+  {
+    label: 'Normativa específica',
+    color: '#fbbf24',
+    prompts: [
+      '¿Qué exige el RD 486 sobre condiciones del lugar de trabajo?',
+      '¿Cuándo es obligatoria la vigilancia de la salud?',
+      '¿Qué obligaciones genera una obra de construcción según el RD 1627?',
+    ],
+  },
 ];
+
+const LS_KEY = 'prl_consultor_history';
+
+// Extrae el bloque de fuentes del final del mensaje
+const parseMessage = (content: string): { body: string; sources: string | null } => {
+  const idx = content.lastIndexOf('\n\nFuentes internas:');
+  if (idx === -1) return { body: content, sources: null };
+  return { body: content.slice(0, idx).trim(), sources: content.slice(idx + 2).trim() };
+};
 
 const ConsultorIAPage = () => {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [backendActive, setBackendActive] = useState<boolean | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: 'assistant',
-      content: 'Hola. Soy el Consultor IA de PRL España.\n\nEn este momento funciono en **modo vista previa**: analizo tu consulta contra la base normativa interna (LPRL, RSP, CAE, RD 486, Construcción) y te devuelvo los artículos y fichas más relevantes.\n\nCon la integración IA activa, recibirías una respuesta redactada, argumentada y adaptada a tu caso. Escribe tu consulta para ver cómo funcionaría.',
-    },
-  ]);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState(0);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  // Inicializar desde localStorage o con mensaje de bienvenida
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    try {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved) return JSON.parse(saved) as ChatMessage[];
+    } catch { /* ignore */ }
+    return [WELCOME_MSG];
+  });
+
+  // Guardar en localStorage cuando cambian los mensajes
+  useEffect(() => {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(messages)); } catch { /* ignore */ }
+  }, [messages]);
+
+  // Auto-scroll al último mensaje
+  useEffect(() => {
+    chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' });
+  }, [messages, loading]);
 
   useEffect(() => {
     fetch('/api/health')
@@ -782,6 +835,18 @@ const ConsultorIAPage = () => {
       .then((data) => setBackendActive(data?.ok === true))
       .catch(() => setBackendActive(false));
   }, []);
+
+  const clearHistory = () => {
+    localStorage.removeItem(LS_KEY);
+    setMessages([WELCOME_MSG]);
+  };
+
+  const copyMessage = (content: string, idx: number) => {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopiedIdx(idx);
+      setTimeout(() => setCopiedIdx(null), 1800);
+    });
+  };
 
   const handleAsk = async (customQ?: string) => {
     const q = (customQ ?? question).trim();
@@ -792,7 +857,6 @@ const ConsultorIAPage = () => {
     setQuestion('');
 
     if (backendActive) {
-      // Modo real: enviar al backend proxy
       const ctx = buildNormativeContext(q);
       const systemPrompt = [
         'Eres un consultor experto en PRL España para técnicos de prevención y mandos intermedios.',
@@ -816,20 +880,17 @@ const ConsultorIAPage = () => {
             ],
           }),
         });
-
         if (!response.ok) throw new Error(`Error ${response.status}`);
         const data = await response.json();
         const answer = data?.message?.content?.trim();
         if (!answer) throw new Error('Sin respuesta del modelo.');
-
         const footer = `\n\nFuentes internas: ${ctx.articleMatches} artículos · ${ctx.fichaMatches} fichas`;
         setMessages((prev) => [...prev, { role: 'assistant', content: answer + footer }]);
       } catch {
         setMessages((prev) => [...prev, { role: 'assistant', content: 'Error al conectar con el motor IA. Verifica que el servicio esté activo.' }]);
       }
     } else {
-      // Modo demo: respuesta construida desde el repositorio interno
-      await new Promise((r) => setTimeout(r, 900)); // simula latencia
+      await new Promise((r) => setTimeout(r, 700));
       const demoAnswer = buildDemoResponse(q);
       setMessages((prev) => [...prev, { role: 'assistant', content: demoAnswer }]);
     }
@@ -852,42 +913,79 @@ const ConsultorIAPage = () => {
             <span>Mostrando cómo operaría el consultor con tu base normativa interna. Las respuestas reales requieren integración IA activa.</span>
           </div>
         )}
-
         {backendActive === true && (
           <div className="ai-inline-note ai-live-banner">
             <span className="ai-live-badge">IA activa</span>
             <span>Conectado al motor de IA. Respuestas generadas con contexto normativo del repositorio.</span>
           </div>
         )}
-
         {backendActive === null && (
           <div className="ai-inline-note">Comprobando conexión con el motor IA…</div>
         )}
 
-        <div className="ai-demo-prompts">
-          <span className="ai-demo-prompts-label">Consultas de ejemplo:</span>
-          {DEMO_PROMPTS.map((p) => (
-            <button key={p} className="ai-demo-chip" onClick={() => handleAsk(p)}>
-              {p}
-            </button>
-          ))}
+        {/* Presets por categoría */}
+        <div className="ai-presets-wrap">
+          <div className="ai-presets-tabs">
+            {DEMO_PROMPTS_BY_CATEGORY.map((cat, i) => (
+              <button
+                key={i}
+                className={`ai-preset-tab ${activeCategory === i ? 'active' : ''}`}
+                style={{ '--tab-color': cat.color } as React.CSSProperties}
+                onClick={() => setActiveCategory(i)}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+          <div className="ai-preset-chips">
+            {DEMO_PROMPTS_BY_CATEGORY[activeCategory].prompts.map((p) => (
+              <button key={p} className="ai-demo-chip" onClick={() => handleAsk(p)} disabled={loading}>
+                {p}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="ai-chat">
-          {messages.map((m, idx) => (
-            <div key={idx} className={`ai-msg ai-msg-${m.role}`}>
-              <span className="ai-msg-role">{m.role === 'assistant' ? 'Consultor IA' : 'Tú'}</span>
-              <p style={{ whiteSpace: 'pre-wrap' }}>{m.content}</p>
-            </div>
-          ))}
+        {/* Chat */}
+        <div className="ai-chat" ref={chatRef}>
+          {messages.map((m, idx) => {
+            const { body, sources } = parseMessage(m.content);
+            return (
+              <div key={idx} className={`ai-msg ai-msg-${m.role}`}>
+                <div className="ai-msg-header">
+                  <span className="ai-msg-role">{m.role === 'assistant' ? 'Consultor IA' : 'Tú'}</span>
+                  {m.role === 'assistant' && (
+                    <button
+                      className={`ai-copy-btn ${copiedIdx === idx ? 'copied' : ''}`}
+                      onClick={() => copyMessage(body, idx)}
+                      title="Copiar respuesta"
+                    >
+                      {copiedIdx === idx ? '✓ Copiado' : '📋 Copiar'}
+                    </button>
+                  )}
+                </div>
+                <p style={{ whiteSpace: 'pre-wrap' }}>{body}</p>
+                {sources && (
+                  <div className="ai-sources-chip">
+                    📎 {sources}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           {loading && (
             <div className="ai-msg ai-msg-assistant">
-              <span className="ai-msg-role">Consultor IA</span>
-              <p>{backendActive ? 'Analizando con IA…' : 'Buscando en repositorio normativo…'}</p>
+              <div className="ai-msg-header">
+                <span className="ai-msg-role">Consultor IA</span>
+              </div>
+              <p className="ai-typing">
+                <span /><span /><span />
+              </p>
             </div>
           )}
         </div>
 
+        {/* Composer */}
         <div className="ai-composer">
           <textarea
             className="ai-input ai-textarea"
@@ -896,9 +994,18 @@ const ConsultorIAPage = () => {
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAsk(); } }}
             placeholder="Ej: ¿Qué obligaciones tengo para coordinación de actividades con dos subcontratas?"
           />
-          <button className="audit-action-btn" onClick={() => handleAsk()} disabled={loading || !question.trim()}>
-            {loading ? 'Analizando…' : 'Consultar'}
-          </button>
+          <div className="ai-composer-actions">
+            <button className="audit-action-btn" onClick={() => handleAsk()} disabled={loading || !question.trim()}>
+              {loading ? 'Analizando…' : 'Consultar'}
+            </button>
+            <button
+              className="audit-action-btn ai-clear-btn"
+              onClick={clearHistory}
+              title="Borrar historial de conversación"
+            >
+              🗑️
+            </button>
+          </div>
         </div>
 
         <div className="ai-activation-note">
@@ -957,6 +1064,119 @@ const SECTORES = [
     color: '#c084fc',
   },
 ];
+
+// ── Exportar Auditoría a PDF (jsPDF text-based) ──────────────────────────
+const exportAuditoriaPDF = (
+  sector: typeof SECTORES[0],
+  leyesAuditoria: typeof leyes,
+  checked: Set<string>,
+  totalIds: string[]
+) => {
+  const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+  const pageW = 210;
+  const pageH = 297;
+  const marginL = 14;
+  const marginR = 14;
+  const contentW = pageW - marginL - marginR;
+  const now = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+  let y = 0;
+
+  const checkY = (needed = 10) => {
+    if (y + needed > pageH - 14) {
+      doc.addPage();
+      y = 16;
+    }
+  };
+
+  // ── Portada ──
+  doc.setFillColor(8, 12, 20);
+  doc.rect(0, 0, pageW, 55, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text('PRL España', marginL, 22);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Checklist de Cumplimiento Normativo', marginL, 30);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Sector: ${sector.icon} ${sector.label}`, marginL, 40);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Generado: ${now}`, marginL, 49);
+
+  // ── Resumen ──
+  y = 66;
+  doc.setTextColor(30, 30, 30);
+  doc.setFillColor(240, 249, 255);
+  doc.roundedRect(marginL, y, contentW, 26, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(0, 80, 160);
+  doc.text('Resumen de Progreso', marginL + 4, y + 7);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(9);
+  const progress = totalIds.length ? Math.round((checked.size / totalIds.length) * 100) : 0;
+  doc.text(
+    `Verificados: ${checked.size} / ${totalIds.length}   ·   Pendientes: ${totalIds.length - checked.size}   ·   Cumplimiento: ${progress}%`,
+    marginL + 4, y + 15
+  );
+  doc.text(`Normativas incluidas: ${leyesAuditoria.map(l => l.codigo).join(', ')}`, marginL + 4, y + 22);
+  y += 34;
+
+  // ── Artículos ──
+  for (const ley of leyesAuditoria) {
+    checkY(14);
+    doc.setFillColor(20, 30, 60);
+    doc.rect(marginL, y, contentW, 9, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(`${ley.icono}  ${ley.codigo} — ${ley.titulo}`, marginL + 3, y + 6);
+    y += 12;
+
+    for (const cap of ley.capitulos) {
+      checkY(8);
+      doc.setTextColor(80, 100, 140);
+      doc.setFont('helvetica', 'bolditalic');
+      doc.setFontSize(8.5);
+      doc.text(`${cap.numero}  ${cap.titulo}`, marginL + 2, y);
+      y += 5;
+
+      for (const art of cap.articulos) {
+        checkY(7);
+        const isChecked = checked.has(art.id);
+        // checkbox symbol
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(isChecked ? 22 : 150, isChecked ? 163 : 150, isChecked ? 74 : 150);
+        const mark = isChecked ? '[✓]' : '[ ]';
+        doc.text(mark, marginL + 2, y);
+        doc.setTextColor(isChecked ? 30 : 80, 30, 30);
+        const label = `Art. ${art.numero}  ${art.titulo}`;
+        const lines = doc.splitTextToSize(label, contentW - 16) as string[];
+        doc.text(lines, marginL + 13, y);
+        y += Math.max(lines.length * 4.5, 6);
+      }
+      y += 2;
+    }
+    y += 4;
+  }
+
+  // ── Pie de página en todas las páginas ──
+  const total = (doc as any).internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    doc.setPage(i);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(160, 160, 160);
+    doc.text('PRL España · Checklist de Auditoría', marginL, pageH - 6);
+    doc.text(`Pág. ${i} / ${total}`, pageW - marginR, pageH - 6, { align: 'right' });
+  }
+
+  doc.save(`Auditoria_PRL_${sector.id}_${new Date().toISOString().slice(0,10)}.pdf`);
+};
 
 const AuditoriaPage = () => {
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
@@ -1052,6 +1272,13 @@ const AuditoriaPage = () => {
         <div className="auditoria-header-actions">
           <button className="audit-action-btn" onClick={checkAll}>Marcar todo</button>
           <button className="audit-action-btn" onClick={uncheckAll}>Limpiar</button>
+          <button
+            className="audit-action-btn audit-export-btn"
+            onClick={() => exportAuditoriaPDF(sector!, leyesAuditoria, checked, totalIds)}
+            title="Exportar checklist completo a PDF"
+          >
+            📄 Exportar PDF
+          </button>
         </div>
       </div>
 

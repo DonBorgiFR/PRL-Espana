@@ -1,6 +1,6 @@
 # ROADMAP — PRL España
 
-Estado: 24 de marzo de 2026.
+Estado: 24 de marzo de 2026. Última actualización: 23:10.
 
 ---
 
@@ -58,7 +58,7 @@ Estado: 24 de marzo de 2026.
 - [x] Exportar fichas de capacitacion a PDF.
 - [x] Exportar articulo view a PDF (con referencias cruzadas visibles).
 - [x] Explorar: `jsPDF` + `html2canvas` (Implementado).
-- [ ] Exportar resultados de Checklist de Auditoría Interactiva.
+- [x] Exportar resultados de Checklist de Auditoría Interactiva.
 
 ### Bloque 3 — UX consultor IA
 **Por que tercero:** mejorar la experiencia de prueba publica antes de escalar activaciones personalizadas.
@@ -71,17 +71,17 @@ Estado: 24 de marzo de 2026.
 ### Bloque 4 — Consistencia interna y workflows de agente
 **Por que cuarto:** documentar para no perder prácticas establecidas.
 
-- [ ] `.agent/workflows/add_ficha.md` — proceso para añadir ficha de capacitacion.
-- [ ] `.agent/workflows/build_deploy.md` — proceso de build + deploy completo.
-- [ ] `.agent/workflows/add_norma.md` — proceso para integrar nueva norma al data layer.
+- [x] `.agent/workflows/add_ficha.md` — proceso para añadir ficha de capacitacion.
+- [x] `.agent/workflows/build_deploy.md` — proceso de build + deploy completo.
+- [x] `.agent/workflows/add_norma.md` — proceso para integrar nueva norma al data layer.
 
 ### Bloque 5 — Ampliacion normativa
 **Por que quinto:** completar cobertura para sectores mas demandados.
 
-- [ ] RD 614/2001 — Riesgo electrico (alta demanda en industria y mantenimiento).
-- [ ] RD 1215/1997 — Equipos de trabajo (complementa RD 486 Anexo I.C).
-- [ ] RD 773/1997 — EPI (complementa jerarquia de controles).
-- [ ] Ampliar RD 486 con Anexo VI (condiciones de proteccion — EPI).
+- [x] RD 614/2001 — Riesgo electrico (alta demanda en industria y mantenimiento). 8 artículos, color cian.
+- [x] RD 1215/1997 — Equipos de trabajo (complementa RD 486 Anexo I.C). 7 artículos, color violeta.
+- [x] RD 773/1997 — EPI (complementa jerarquia de controles). 8 artículos, color rosa.
+- [ ] Ampliar RD 486 con Anexo VI (condiciones de proteccion — EPI). Pendiente.
 
 ### Bloque 6 — Repo espejo operativo
 **Por que sexto:** materializar estrategia ya documentada.
